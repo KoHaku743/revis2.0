@@ -14,5 +14,5 @@ COPY . .
 # Expose frontend port
 EXPOSE 5173 5174
 
-# Start frontend dev server
-CMD ["npm", "run", "dev", "--workspace=client"]
+# Start frontend dev server (accessible on all interfaces for Docker)
+CMD ["npm", "run", "dev"]
