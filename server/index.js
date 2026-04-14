@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
 const jwt = require('jsonwebtoken')
+const rateLimit = require('express-rate-limit')
 
 dotenv.config()
 
@@ -11,6 +12,25 @@ const tajnyKluc = process.env.JWT_SECRET || 'vyvojovy_kluc'
 
 app.use(cors())
 app.use(express.json())
+
+const vseobecnyLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Príliš veľa požiadaviek. Skúste to prosím neskôr.' },
+})
+
+const prihlasovaciLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Príliš veľa pokusov o prihlásenie. Skúste to prosím neskôr.' },
+})
+
+app.use('/api', vseobecnyLimiter)
+app.use('/api/auth/login', prihlasovaciLimiter)
 
 const users = [
   { id: 1, name: 'Admin', username: 'admin', password: 'admin123', role: 'admin', employee_code: 'BAC' },
