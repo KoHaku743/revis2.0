@@ -4,6 +4,13 @@
 
 Build a full-stack web application for a team of iPhone repair technicians. The system tracks phone repairs, parts used, testing results, and logs them to a Google Sheet that mirrors the existing spreadsheet format. Each technician has a personal dashboard, can take ownership of phones, and collaborate with colleagues.
 
+## Language Requirement (Slovak Only)
+
+- The website must be strictly for Slovak-speaking users.
+- All UI text, labels, buttons, validation messages, notifications, and user-facing content must be in Slovak.
+- Do not mix Slovak with English in the interface.
+- Any fallback/default locale must be Slovak (`sk-SK`).
+
 ---
 
 ## Tech Stack
