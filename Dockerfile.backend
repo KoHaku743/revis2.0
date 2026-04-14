@@ -2,9 +2,10 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy root workspace files (includes package-lock.json) and server package.json
+# Copy root workspace files (includes package-lock.json) and workspace package.json files
 COPY package.json package-lock.json ./
 COPY server/package.json ./server/
+COPY client/package.json ./client/
 
 # Install dependencies from lockfile
 RUN npm ci
