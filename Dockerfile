@@ -1,33 +1,35 @@
 # Multi-stage build for React frontend
 FROM node:20-alpine AS frontend-builder
 
-WORKDIR /app/client
+WORKDIR /app
 
-# Copy package files
-COPY client/package*.json ./
+# Copy root workspace files (includes package-lock.json) and client package.json
+COPY package.json package-lock.json ./
+COPY client/package.json ./client/
 
-# Install dependencies
-RUN npm ci
+# Install client workspace dependencies from lockfile
+RUN npm ci --workspace=client
 
 # Copy source code
-COPY client ./
+COPY client ./client
 
 # Build the application
-RUN npm run build
+RUN npm run build --workspace=client
 
 # Backend stage
 FROM node:20-alpine AS backend
 
-WORKDIR /app/server
+WORKDIR /app
 
-# Copy package files
-COPY server/package*.json ./
+# Copy root workspace files (includes package-lock.json) and server package.json
+COPY package.json package-lock.json ./
+COPY server/package.json ./server/
 
-# Install dependencies (production only)
-RUN npm ci --only=production
+# Install server workspace dependencies (production only) from lockfile
+RUN npm ci --workspace=server --omit=dev
 
 # Copy source code
-COPY server ./
+COPY server ./server
 
 # Production stage - combine both
 FROM node:20-alpine
@@ -40,8 +42,9 @@ RUN npm install -g serve
 # Create app directories
 RUN mkdir -p /app/server /app/client/dist
 
-# Copy backend from builder
+# Copy backend source and workspace node_modules from builder
 COPY --from=backend /app/server /app/server
+COPY --from=backend /app/node_modules /app/node_modules
 
 # Copy frontend build from builder
 COPY --from=frontend-builder /app/client/dist /app/client/dist
