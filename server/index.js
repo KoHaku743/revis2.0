@@ -186,8 +186,8 @@ app.get('/api/phones/:id/repairs', overToken, async (req, res) => {
 app.post('/api/phones/:id/repairs', overToken, async (req, res) => {
   const { date, parts_used, description, service_type, test, button_action, sync } = req.body
 
-  // Button 1 = 5 Nh (basic repair), 2 = 10 Nh (display), 3 = 15 Nh (housing), 4 = 15 Nh (full refurb)
-  const nhMap = { 1: 5, 2: 10, 3: 15, 4: 15 }
+  // Button 1 = 5 Nh (+5€, swap battery or LCD), 2 = 10 Nh (+10€, swap battery/LCD + something else), 3 = 10 Nh (+10€, Refurb LCD), 4 = 15 Nh (+15€, full refurb)
+  const nhMap = { 1: 5, 2: 10, 3: 10, 4: 15 }
   const normo_hours = nhMap[button_action] || null
 
   const { rows } = await db.query(
